@@ -45,7 +45,7 @@ export default function App() {
     fullName: "Huynh Gia Quan",
     nickname: "Zeroth",
     dateOfBirth: "05/11/2005",
-    avatar: "../img/ego.jpeg",    
+    avatar: "ego.jpeg",    
     title: "Full Stack Developer | Cybersecurity Enthusiast",
     bio: "Passionate about creating amazing web experiences and exploring cybersecurity",
 
