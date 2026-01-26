@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Github, Facebook, Music, Youtube, Mail, Linkedin, ChevronDown, Code, Zap, Globe, Smartphone, Database, Lock, Menu, X, ExternalLink, Briefcase } from 'lucide-react';
+import React, { useEffect, useState, useRef } from 'react';
+import { Github, Facebook, Music, Youtube, Mail, Linkedin, ChevronDown, Code, Zap, Globe, Smartphone, Database, Lock, Menu, X, ExternalLink, Briefcase, Award, Coffee, Star, Rocket, Download } from 'lucide-react';
 
 export default function App() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -7,22 +7,78 @@ export default function App() {
   const [scrollY, setScrollY] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
+  const [typedText, setTypedText] = useState('');
+  const [stats, setStats] = useState({ projects: 0, clients: 0, experience: 0 });
+  const [matrixRain, setMatrixRain] = useState([]);
+
+  const fullText = "Full Stack Developer | Cybersecurity Enthusiast";
+  const typingSpeed = 100;
 
   useEffect(() => {
     generateParticles();
+    generateMatrixRain();
+  }, []);
+
+  // Typing animation
+  useEffect(() => {
+    if (typedText.length < fullText.length) {
+      const timeout = setTimeout(() => {
+        setTypedText(fullText.slice(0, typedText.length + 1));
+      }, typingSpeed);
+      return () => clearTimeout(timeout);
+    }
+  }, [typedText]);
+
+  // Stats counter animation
+  useEffect(() => {
+    const targetStats = { projects: 50, clients: 30, experience: 3 };
+    const duration = 2000;
+    const steps = 60;
+    const stepDuration = duration / steps;
+
+    let currentStep = 0;
+    const interval = setInterval(() => {
+      currentStep++;
+      const progress = currentStep / steps;
+
+      setStats({
+        projects: Math.floor(targetStats.projects * progress),
+        clients: Math.floor(targetStats.clients * progress),
+        experience: Math.floor(targetStats.experience * progress),
+      });
+
+      if (currentStep >= steps) {
+        clearInterval(interval);
+        setStats(targetStats);
+      }
+    }, stepDuration);
+
+    return () => clearInterval(interval);
   }, []);
 
   const generateParticles = () => {
-    const newParticles = Array.from({ length: 80 }, (_, i) => ({
+    const newParticles = Array.from({ length: 120 }, (_, i) => ({
       id: i,
       x: Math.random() * 100,
       y: Math.random() * 100,
-      size: Math.random() * 2 + 0.5,
-      duration: Math.random() * 25 + 20,
+      size: Math.random() * 3 + 1,
+      duration: Math.random() * 20 + 15,
       delay: Math.random() * 5,
       speedX: Math.random() * 0.5 - 0.25,
+      opacity: Math.random() * 0.6 + 0.2,
     }));
     setParticles(newParticles);
+  };
+
+  const generateMatrixRain = () => {
+    const columns = 20;
+    const rain = Array.from({ length: columns }, (_, i) => ({
+      id: i,
+      x: (100 / columns) * i,
+      duration: Math.random() * 10 + 10,
+      delay: Math.random() * 5,
+    }));
+    setMatrixRain(rain);
   };
 
   useEffect(() => {
@@ -33,7 +89,6 @@ export default function App() {
     const handleScroll = () => {
       setScrollY(window.scrollY);
 
-      // Determine active section based on scroll position
       const sections = ['home', 'about', 'skills', 'projects', 'contact'];
       const scrollPosition = window.scrollY + window.innerHeight / 2;
 
@@ -73,6 +128,14 @@ export default function App() {
     avatar: "ego.jpeg",
     title: "Full Stack Developer | Cybersecurity Enthusiast",
     bio: "Passionate about creating amazing web experiences and exploring cybersecurity",
+
+    // Huy hiệu/Badges
+    badges: [
+      { icon: Award, text: "Top Developer", color: "from-yellow-400 to-orange-500" },
+      { icon: Coffee, text: "Coffee Lover", color: "from-amber-600 to-amber-800" },
+      { icon: Star, text: "5★ Rated", color: "from-purple-400 to-pink-500" },
+      { icon: Rocket, text: "Fast Delivery", color: "from-blue-400 to-cyan-500" },
+    ],
 
     // Tiểu sử / Giới thiệu
     biography: [
@@ -207,14 +270,32 @@ export default function App() {
           0%, 100% { transform: translateY(0px); }
           50% { transform: translateY(-20px); }
         }
+        @keyframes float-slow {
+          0%, 100% { transform: translateY(0px) translateX(0px); }
+          50% { transform: translateY(-30px) translateX(10px); }
+        }
         @keyframes glow {
           0%, 100% { 
             text-shadow: 0 0 10px rgba(0, 255, 200, 0.5),
-                        0 0 20px rgba(0, 255, 200, 0.3);
+                        0 0 20px rgba(0, 255, 200, 0.3),
+                        0 0 30px rgba(0, 255, 200, 0.2);
           }
           50% { 
-            text-shadow: 0 0 30px rgba(0, 255, 200, 1),
-                        0 0 40px rgba(0, 255, 200, 0.5);
+            text-shadow: 0 0 20px rgba(0, 255, 200, 1),
+                        0 0 40px rgba(0, 255, 200, 0.7),
+                        0 0 60px rgba(0, 255, 200, 0.4);
+          }
+        }
+        @keyframes glow-pulse {
+          0%, 100% { 
+            box-shadow: 0 0 20px rgba(0, 255, 200, 0.4),
+                       0 0 40px rgba(0, 255, 200, 0.2),
+                       inset 0 0 20px rgba(0, 255, 200, 0.1);
+          }
+          50% { 
+            box-shadow: 0 0 40px rgba(0, 255, 200, 0.8),
+                       0 0 80px rgba(0, 255, 200, 0.4),
+                       inset 0 0 40px rgba(0, 255, 200, 0.2);
           }
         }
         @keyframes scan {
@@ -226,8 +307,8 @@ export default function App() {
             transform: translateY(100vh) translateX(0) rotate(0deg);
             opacity: 0;
           }
-          10% { opacity: 0.6; }
-          90% { opacity: 0.6; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
           100% {
             transform: translateY(-100vh) translateX(100px) rotate(360deg);
             opacity: 0;
@@ -285,14 +366,74 @@ export default function App() {
             transform: translateY(0);
           }
         }
+        @keyframes rotate-3d {
+          0% { transform: perspective(1000px) rotateY(0deg); }
+          100% { transform: perspective(1000px) rotateY(360deg); }
+        }
+        @keyframes holographic {
+          0%, 100% {
+            background-position: 0% 50%;
+            filter: hue-rotate(0deg);
+          }
+          50% {
+            background-position: 100% 50%;
+            filter: hue-rotate(30deg);
+          }
+        }
+        @keyframes matrix-rain {
+          0% { transform: translateY(-100%); opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { transform: translateY(100vh); opacity: 0; }
+        }
+        @keyframes badge-float {
+          0%, 100% { transform: translateY(0px) rotate(-3deg); }
+          50% { transform: translateY(-15px) rotate(3deg); }
+        }
+        @keyframes neon-flicker {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.8; }
+          75% { opacity: 1; }
+          80% { opacity: 0.9; }
+        }
+        @keyframes scale-in {
+          from {
+            opacity: 0;
+            transform: scale(0.8);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+        @keyframes text-glow-intense {
+          0%, 100% {
+            text-shadow: 
+              0 0 10px rgba(0, 255, 200, 0.8),
+              0 0 20px rgba(0, 255, 200, 0.6),
+              0 0 30px rgba(0, 255, 200, 0.4),
+              0 0 40px rgba(0, 255, 200, 0.2),
+              0 0 70px rgba(0, 255, 200, 0.1);
+          }
+          50% {
+            text-shadow: 
+              0 0 20px rgba(0, 255, 200, 1),
+              0 0 40px rgba(0, 255, 200, 0.8),
+              0 0 60px rgba(0, 255, 200, 0.6),
+              0 0 80px rgba(0, 255, 200, 0.4),
+              0 0 140px rgba(0, 255, 200, 0.2);
+          }
+        }
 
         .float { animation: float 6s ease-in-out infinite; }
+        .float-slow { animation: float-slow 8s ease-in-out infinite; }
         .glow { animation: glow 3s ease-in-out infinite; }
+        .glow-pulse { animation: glow-pulse 3s ease-in-out infinite; }
         .scan-line {
           position: absolute;
           width: 100%;
-          height: 1px;
-          background: linear-gradient(90deg, transparent, rgba(0, 255, 200, 0.5), transparent);
+          height: 2px;
+          background: linear-gradient(90deg, transparent, rgba(0, 255, 200, 0.8), transparent);
           animation: scan 8s linear infinite;
           z-index: 50;
         }
@@ -304,6 +445,17 @@ export default function App() {
         .slide-in-left { animation: slide-in-left 0.8s ease-out; }
         .slide-in-up { animation: slide-in-up 0.8s ease-out; }
         .slide-down { animation: slide-down 0.3s ease-out; }
+        .rotate-3d { animation: rotate-3d 20s linear infinite; }
+        .holographic { 
+          background: linear-gradient(45deg, #00ffc8, #00ffff, #0099ff, #ff00ff, #00ffc8);
+          background-size: 300% 300%;
+          animation: holographic 8s ease infinite; 
+        }
+        .matrix-rain { animation: matrix-rain linear infinite; }
+        .badge-float { animation: badge-float 3s ease-in-out infinite; }
+        .neon-flicker { animation: neon-flicker 2s ease-in-out infinite; }
+        .scale-in { animation: scale-in 0.5s ease-out; }
+        .text-glow-intense { animation: text-glow-intense 3s ease-in-out infinite; }
 
         /* Cybersecurity Grid Background */
         .grid-bg {
@@ -313,13 +465,14 @@ export default function App() {
           background-size: 50px 50px;
         }
 
-        /* Glow effect on hover */
+        /* Enhanced glow effect on hover */
         .glow-hover {
           transition: all 0.3s ease;
         }
         .glow-hover:hover {
-          filter: brightness(1.2);
-          box-shadow: 0 0 20px rgba(0, 255, 200, 0.5);
+          filter: brightness(1.3);
+          box-shadow: 0 0 30px rgba(0, 255, 200, 0.6);
+          transform: translateY(-2px);
         }
 
         /* Cybersecurity text effect */
@@ -330,6 +483,21 @@ export default function App() {
           -webkit-text-fill-color: transparent;
           background-clip: text;
           animation: shimmer 3s linear infinite;
+        }
+
+        /* 3D Text Effect */
+        .text-3d {
+          text-shadow: 
+            0 1px 0 rgba(0, 255, 200, 0.9),
+            0 2px 0 rgba(0, 255, 200, 0.8),
+            0 3px 0 rgba(0, 255, 200, 0.7),
+            0 4px 0 rgba(0, 255, 200, 0.6),
+            0 5px 0 rgba(0, 255, 200, 0.5),
+            0 6px 0 rgba(0, 255, 200, 0.4),
+            0 7px 0 rgba(0, 255, 200, 0.3),
+            0 8px 0 rgba(0, 255, 200, 0.2),
+            0 10px 10px rgba(0, 0, 0, 0.4),
+            0 15px 20px rgba(0, 0, 0, 0.2);
         }
 
         .skill-bar {
@@ -383,6 +551,33 @@ export default function App() {
         .project-card:hover {
           transform: translateY(-8px);
         }
+
+        /* Glass morphism */
+        .glass {
+          background: rgba(0, 0, 0, 0.4);
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+          border: 1px solid rgba(0, 255, 200, 0.2);
+        }
+
+        /* Holographic border */
+        .holographic-border {
+          position: relative;
+          border: 2px solid transparent;
+          background: linear-gradient(black, black) padding-box,
+                      linear-gradient(45deg, #00ffc8, #00ffff, #0099ff, #ff00ff) border-box;
+        }
+
+        /* Cursor blink for typing effect */
+        .typing-cursor::after {
+          content: '|';
+          animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+          0%, 49% { opacity: 1; }
+          50%, 100% { opacity: 0; }
+        }
       `}</style>
 
       {/* Background Grid */}
@@ -391,36 +586,57 @@ export default function App() {
       {/* Scan Line Effect */}
       <div className="scan-line z-50"></div>
 
-      {/* Particle Background */}
+      {/* Matrix Rain Effect */}
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden opacity-20">
+        {matrixRain.map((rain) => (
+          <div
+            key={rain.id}
+            className="matrix-rain absolute text-cyan-400 font-mono text-xs"
+            style={{
+              left: `${rain.x}%`,
+              animation: `matrix-rain ${rain.duration}s linear infinite`,
+              animationDelay: `${rain.delay}s`,
+            }}
+          >
+            {Array.from({ length: 20 }, (_, i) => (
+              <div key={i}>{Math.random() > 0.5 ? '1' : '0'}</div>
+            ))}
+          </div>
+        ))}
+      </div>
+
+      {/* Enhanced Particle Background */}
       <div className="fixed inset-0 z-0 pointer-events-none">
         {particles.map((particle) => (
           <div
             key={particle.id}
-            className="particle absolute bg-cyan-400 rounded-full opacity-60"
+            className="particle absolute rounded-full"
             style={{
               width: `${particle.size}px`,
               height: `${particle.size}px`,
               left: `${particle.x}%`,
               bottom: '0',
+              background: `radial-gradient(circle, rgba(0, 255, 200, ${particle.opacity}), rgba(0, 150, 255, ${particle.opacity * 0.5}))`,
               animation: `particle-float ${particle.duration}s linear infinite`,
               animationDelay: `${particle.delay}s`,
+              boxShadow: `0 0 ${particle.size * 2}px rgba(0, 255, 200, ${particle.opacity})`,
             }}
           ></div>
         ))}
       </div>
 
-      {/* Mouse Glow Effect */}
+      {/* Enhanced Mouse Glow Effect */}
       <div
         className="fixed pointer-events-none z-5"
         style={{
-          width: '400px',
-          height: '400px',
-          background: 'radial-gradient(circle, rgba(0, 255, 200, 0.15) 0%, transparent 70%)',
+          width: '600px',
+          height: '600px',
+          background: 'radial-gradient(circle, rgba(0, 255, 200, 0.2) 0%, rgba(0, 150, 255, 0.1) 30%, transparent 70%)',
           borderRadius: '50%',
-          left: `${mousePosition.x - 200}px`,
-          top: `${mousePosition.y - 200}px`,
+          left: `${mousePosition.x - 300}px`,
+          top: `${mousePosition.y - 300}px`,
           transition: 'all 0.1s ease-out',
-          filter: 'blur(50px)',
+          filter: 'blur(60px)',
         }}
       ></div>
 
@@ -438,7 +654,7 @@ export default function App() {
             {/* Logo */}
             <button
               onClick={() => scrollToSection('home')}
-              className="text-2xl font-bold cyber-text hover:scale-110 transition-transform cursor-pointer"
+              className="text-2xl font-bold cyber-text hover:scale-110 transition-transform cursor-pointer neon-flicker"
               aria-label="Scroll to home"
             >
               &lt;Zeroth /&gt;
@@ -457,7 +673,7 @@ export default function App() {
                   >
                     {item.label}
                     {activeSection === item.id && (
-                      <span className="absolute bottom-0 left-0 w-full h-0.5 bg-cyan-400 rounded-full"></span>
+                      <span className="absolute bottom-0 left-0 w-full h-0.5 bg-cyan-400 rounded-full glow-pulse"></span>
                     )}
                   </button>
                 ))}
@@ -503,67 +719,166 @@ export default function App() {
 
       {/* Main Content */}
       <div className="relative z-20">
-        {/* ===== SECTION 1: HERO SECTION ===== */}
+        {/* ===== SECTION 1: ENHANCED HERO SECTION ===== */}
         <section id="home" className="min-h-screen flex items-center justify-center px-4 py-20 relative overflow-hidden">
           {/* Animated Background Elements */}
-          <div className="absolute top-20 left-10 w-72 h-72 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob"></div>
-          <div className="absolute bottom-20 right-10 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob animation-delay-2000"></div>
-          <div className="absolute top-1/2 left-1/2 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob animation-delay-4000"></div>
+          <div className="absolute top-20 left-10 w-96 h-96 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+          <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
 
-          <div className="w-full max-w-4xl">
+          {/* Rotating rings */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div className="w-[600px] h-[600px] border-2 border-cyan-500 border-opacity-20 rounded-full rotate-3d"></div>
+          </div>
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div className="w-[700px] h-[700px] border border-blue-500 border-opacity-10 rounded-full rotate-3d" style={{ animationDuration: '15s', animationDirection: 'reverse' }}></div>
+          </div>
+
+          <div className="w-full max-w-6xl">
             {/* Header Decoration */}
             <div className="text-center mb-12 space-y-4 slide-in-left">
               <div className="inline-block">
-                <div className="text-xs font-mono text-cyan-400 mb-3 animate-pulse">
-                  &gt; INITIALIZING SYSTEM...
+                <div className="text-xs md:text-sm font-mono text-cyan-400 mb-3 animate-pulse">
+                  &gt; INITIALIZING ADVANCED SYSTEMS...
                 </div>
-                <div className="h-0.5 w-96 max-w-full bg-gradient-to-r from-transparent via-cyan-400 to-transparent mb-4"></div>
+                <div className="h-0.5 w-full max-w-2xl bg-gradient-to-r from-transparent via-cyan-400 to-transparent mb-4"></div>
               </div>
             </div>
 
-            {/* Main Card */}
-            <div className="bg-black bg-opacity-60 backdrop-blur-xl border border-cyan-500 border-opacity-30 rounded-3xl p-8 md:p-12 pulse-border glow-hover slide-in-up">
-              {/* Avatar Section */}
-              <div className="flex flex-col items-center mb-12">
-                <div className="relative mb-8">
-                  <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 rounded-full blur-2xl opacity-70 animate-pulse"></div>
-                  <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 rounded-full blur-lg opacity-50 animate-spin" style={{ animationDuration: '8s' }}></div>
-                  <img
-                    src={profileData.avatar}
-                    alt={`${profileData.fullName} - ${profileData.title}`}
-                    className="relative w-32 h-32 md:w-48 md:h-48 rounded-full border-4 border-cyan-400 object-cover float glow-hover shadow-2xl"
-                  />
+            {/* Main Holographic Card */}
+            <div className="glass holographic-border rounded-3xl p-8 md:p-16 glow-pulse scale-in relative overflow-hidden">
+              {/* Holographic overlay */}
+              <div className="absolute inset-0 holographic opacity-10 pointer-events-none"></div>
+
+              {/* Content */}
+              <div className="relative z-10">
+                {/* Avatar Section with enhanced effects */}
+                <div className="flex flex-col items-center mb-12">
+                  <div className="relative mb-8">
+                    {/* Multiple glow layers */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 rounded-full blur-3xl opacity-80 animate-pulse"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500 rounded-full blur-2xl opacity-60 animate-spin" style={{ animationDuration: '10s' }}></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-yellow-400 via-red-500 to-blue-500 rounded-full blur-xl opacity-40 animate-spin" style={{ animationDuration: '6s', animationDirection: 'reverse' }}></div>
+
+                    {/* Avatar with holographic border */}
+                    <div className="relative holographic-border rounded-full p-2">
+                      <img
+                        src={profileData.avatar}
+                        alt={`${profileData.fullName} - ${profileData.title}`}
+                        className="relative w-40 h-40 md:w-56 md:h-56 rounded-full object-cover float-slow shadow-2xl"
+                      />
+                    </div>
+
+                    {/* Floating badges around avatar */}
+                    {profileData.badges.map((badge, index) => {
+                      const BadgeIcon = badge.icon;
+                      const positions = [
+                        { top: '0%', left: '100%' },
+                        { top: '30%', left: '-10%' },
+                        { top: '70%', left: '100%' },
+                        { top: '100%', left: '50%' },
+                      ];
+                      return (
+                        <div
+                          key={index}
+                          className={`absolute badge-float hidden md:block`}
+                          style={{
+                            ...positions[index],
+                            animationDelay: `${index * 0.5}s`,
+                          }}
+                        >
+                          <div className={`bg-gradient-to-br ${badge.color} px-3 py-2 rounded-full flex items-center gap-2 shadow-lg glow-hover`}>
+                            <BadgeIcon className="w-4 h-4 text-white" />
+                            <span className="text-xs font-bold text-white whitespace-nowrap">{badge.text}</span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Name with 3D effect */}
+                  <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-3d cyber-text mb-6 text-glow-intense text-center leading-tight">
+                    {profileData.fullName}
+                  </h1>
+
+                  {/* Nickname with neon effect */}
+                  <div className="text-cyan-400 text-2xl md:text-3xl mb-8 font-mono neon-flicker">
+                    @{profileData.nickname}
+                  </div>
+
+                  {/* Typing animation title */}
+                  <h2 className="text-2xl md:text-3xl lg:text-4xl text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 mb-6 font-bold text-center px-4 min-h-[3rem] typing-cursor">
+                    {typedText}
+                  </h2>
+
+                  {/* Date of Birth with icon */}
+                  <div className="text-gray-400 text-base md:text-lg font-mono mb-8 flex items-center gap-2 glass px-4 py-2 rounded-full">
+                    <span className="text-2xl">📅</span>
+                    <span>DOB: <span className="text-cyan-300 font-bold">{profileData.dateOfBirth}</span></span>
+                  </div>
+
+                  {/* Bio */}
+                  <p className="text-gray-300 text-center text-lg md:text-xl max-w-3xl font-medium leading-relaxed px-4 mb-12">
+                    {profileData.bio}
+                  </p>
+
+                  {/* Stats Counter */}
+                  <div className="grid grid-cols-3 gap-6 md:gap-12 mb-12 w-full max-w-3xl">
+                    <div className="glass rounded-2xl p-6 text-center glow-hover">
+                      <div className="text-4xl md:text-5xl font-black cyber-text mb-2">{stats.projects}+</div>
+                      <div className="text-gray-400 text-sm md:text-base font-medium">Projects</div>
+                    </div>
+                    <div className="glass rounded-2xl p-6 text-center glow-hover">
+                      <div className="text-4xl md:text-5xl font-black cyber-text mb-2">{stats.clients}+</div>
+                      <div className="text-gray-400 text-sm md:text-base font-medium">Clients</div>
+                    </div>
+                    <div className="glass rounded-2xl p-6 text-center glow-hover">
+                      <div className="text-4xl md:text-5xl font-black cyber-text mb-2">{stats.experience}+</div>
+                      <div className="text-gray-400 text-sm md:text-base font-medium">Years Exp</div>
+                    </div>
+                  </div>
+
+                  {/* CTA Buttons */}
+                  <div className="flex flex-col sm:flex-row gap-4 mb-12">
+                    <button
+                      onClick={() => scrollToSection('projects')}
+                      className="group relative px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-xl font-bold text-lg overflow-hidden glow-hover transform hover:scale-105 transition-all duration-300"
+                    >
+                      <span className="relative z-10 flex items-center gap-2">
+                        <Rocket className="w-5 h-5" />
+                        View My Work
+                      </span>
+                      <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-blue-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    </button>
+
+                    <button
+                      onClick={() => scrollToSection('contact')}
+                      className="group relative px-8 py-4 glass border-2 border-cyan-400 rounded-xl font-bold text-lg text-cyan-400 overflow-hidden hover:bg-cyan-400 hover:text-black transition-all duration-300 transform hover:scale-105"
+                    >
+                      <span className="relative z-10 flex items-center gap-2">
+                        <Mail className="w-5 h-5" />
+                        Contact Me
+                      </span>
+                    </button>
+
+                    <a
+                      href="#"
+                      download
+                      className="group relative px-8 py-4 glass border-2 border-purple-400 rounded-xl font-bold text-lg text-purple-400 overflow-hidden hover:bg-purple-400 hover:text-black transition-all duration-300 transform hover:scale-105"
+                    >
+                      <span className="relative z-10 flex items-center gap-2">
+                        <Download className="w-5 h-5" />
+                        Download CV
+                      </span>
+                    </a>
+                  </div>
+
+                  {/* Scroll Indicator */}
+                  <div className="text-center mt-8 animate-bounce">
+                    <ChevronDown className="w-10 h-10 text-cyan-400 mx-auto glow" />
+                    <p className="text-cyan-400 text-sm font-mono mt-2">Scroll to explore</p>
+                  </div>
                 </div>
-
-                {/* Name & Info */}
-                <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold cyber-text mb-4 glow text-center">
-                  {profileData.fullName}
-                </h1>
-                <div className="text-cyan-400 text-xl md:text-2xl mb-6 font-mono">
-                  @{profileData.nickname}
-                </div>
-
-                {/* Title */}
-                <h2 className="text-xl md:text-2xl lg:text-3xl text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 mb-4 font-semibold text-center px-4">
-                  {profileData.title}
-                </h2>
-
-                {/* Date of Birth */}
-                <div className="text-gray-400 text-base md:text-lg font-mono mb-6 flex items-center gap-2">
-                  <span>📅</span>
-                  <span>DOB: <span className="text-cyan-300">{profileData.dateOfBirth}</span></span>
-                </div>
-
-                {/* Bio */}
-                <p className="text-gray-300 text-center text-base md:text-lg max-w-2xl font-medium leading-relaxed px-4">
-                  {profileData.bio}
-                </p>
-              </div>
-
-              {/* Scroll Indicator */}
-              <div className="text-center mt-12 animate-bounce">
-                <ChevronDown className="w-8 h-8 text-cyan-400 mx-auto" />
-                <p className="text-cyan-400 text-sm font-mono mt-2">Scroll</p>
               </div>
             </div>
           </div>
@@ -586,11 +901,11 @@ export default function App() {
               {profileData.biography.map((bio, index) => (
                 <div
                   key={index}
-                  className="bg-black bg-opacity-50 backdrop-blur-lg border border-cyan-500 border-opacity-20 rounded-2xl p-6 md:p-8 glow-hover hover:border-opacity-50 transition-all duration-300 transform hover:scale-105"
+                  className="glass rounded-2xl p-6 md:p-8 glow-hover hover:border-cyan-500 transition-all duration-300 transform hover:scale-105"
                   style={{ animationDelay: `${index * 0.2}s` }}
                 >
                   <div className="flex items-start gap-4">
-                    <div className="text-cyan-400 text-2xl md:text-3xl font-bold flex-shrink-0 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center bg-cyan-400 bg-opacity-10 rounded-lg">
+                    <div className="text-cyan-400 text-2xl md:text-3xl font-bold flex-shrink-0 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center bg-gradient-to-br from-cyan-500 to-blue-500 rounded-lg glow-pulse">
                       {index + 1}
                     </div>
                     <p className="text-gray-300 text-base md:text-lg leading-relaxed pt-1">
@@ -624,10 +939,10 @@ export default function App() {
                 return (
                   <div
                     key={categoryIndex}
-                    className="bg-black bg-opacity-50 backdrop-blur-lg border border-cyan-500 border-opacity-20 rounded-2xl p-6 md:p-8 glow-hover hover:border-opacity-50 transition-all duration-300 transform hover:scale-105"
+                    className="glass rounded-2xl p-6 md:p-8 glow-hover hover:border-cyan-500 transition-all duration-300 transform hover:scale-105"
                   >
                     <div className="flex items-center gap-3 mb-8">
-                      <div className="p-3 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-lg">
+                      <div className="p-3 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-lg glow-pulse">
                         <IconComponent className="w-6 h-6 text-white" />
                       </div>
                       <h3 className="text-xl md:text-2xl font-bold text-cyan-400">
@@ -680,10 +995,10 @@ export default function App() {
               {profileData.projects.map((project, index) => (
                 <div
                   key={index}
-                  className="project-card bg-black bg-opacity-50 backdrop-blur-lg border border-cyan-500 border-opacity-20 rounded-2xl overflow-hidden glow-hover hover:border-opacity-50"
+                  className="project-card glass rounded-2xl overflow-hidden glow-hover hover:border-cyan-500"
                 >
                   {/* Project Icon/Image */}
-                  <div className="bg-gradient-to-br from-cyan-500 to-blue-500 p-8 flex items-center justify-center">
+                  <div className="bg-gradient-to-br from-cyan-500 to-blue-500 p-8 flex items-center justify-center holographic">
                     <span className="text-6xl md:text-7xl">{project.image}</span>
                   </div>
 
@@ -783,7 +1098,7 @@ export default function App() {
             </div>
 
             {/* Contact Card */}
-            <div className="bg-black bg-opacity-60 backdrop-blur-xl border border-cyan-500 border-opacity-30 rounded-3xl p-8 md:p-12 pulse-border text-center">
+            <div className="glass holographic-border rounded-3xl p-8 md:p-12 glow-pulse text-center">
               <div className="text-xs font-mono text-cyan-400 mb-4">
                 &gt; DIRECT_CONTACT_INFO
               </div>
